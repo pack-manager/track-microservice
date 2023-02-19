@@ -1,12 +1,12 @@
 export interface ITrack {
     id: string
     packCode: string
-    events: TrackEvent[]
+    events: TrackEventInfo[]
     lastUpdateDate: string
     lastUpdateTime: string
 }
 
-export interface TrackEvent {
+export interface TrackEventInfo {
     status: string
     title: string
     placeName: string

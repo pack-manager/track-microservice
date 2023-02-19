@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb"
 import { MongoClient } from "../app/database/Mongo"
 import { ITrack } from "../domain/model/ITrack"
 import { AppErrorFactory } from "../shared/error/AppError"
@@ -7,25 +6,27 @@ import { IUpdateTrackRepository, UpdateTrackParams } from "./protocol/IUpdateTra
 import { MongoOmit } from "./protocol/MongoOmit"
 
 export class MongoUpdateTrackRepository implements IUpdateTrackRepository {
-    async update(id: string, params: UpdateTrackParams): Promise<ITrack> {
+    async update(packCode: string, { events, lastUpdateDate, lastUpdateTime }: UpdateTrackParams): Promise<ITrack> {
         const hasTrack = await MongoClient.db
             .collection<MongoOmit>("tracks")
-            .findOne({ _id: new ObjectId(id) })
+            .findOne({ packCode })
 
         if (!hasTrack) {
             throw AppErrorFactory.create(HttpStatusCode.BAD_REQUEST, "Track not found")
         }
 
+        const updatedEvents = hasTrack.events.concat(events).reverse()
+
         await MongoClient.db
             .collection("tracks")
             .updateOne(
-                { _id: new ObjectId(id) },
-                { $set: { ...params } }
+                { packCode },
+                { $set: { events: updatedEvents, lastUpdateDate, lastUpdateTime } }
             )
 
         const track = await MongoClient.db
             .collection<MongoOmit>("tracks")
-            .findOne({ _id: new ObjectId(id) })
+            .findOne({ packCode })
 
         if (!track) {
             throw AppErrorFactory.create(HttpStatusCode.BAD_REQUEST, "Track not updated")

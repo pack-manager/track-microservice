@@ -1,11 +1,11 @@
-import { ITrack } from "../../domain/model/ITrack"
+import { ITrack, TrackEventInfo } from "../../domain/model/ITrack"
 
 export type UpdateTrackParams = {
-    events: TrackEvent[]
+    events: TrackEventInfo[]
     lastUpdateDate: string
     lastUpdateTime: string
 }
 
 export interface IUpdateTrackRepository {
-    update(id: string, params: UpdateTrackParams): Promise<ITrack>
+    update(packCode: string, params: UpdateTrackParams): Promise<ITrack>
 }
