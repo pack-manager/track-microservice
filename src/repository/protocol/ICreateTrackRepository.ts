@@ -2,10 +2,8 @@ import { ITrack } from "../../domain/model/ITrack"
 
 export type CreateTrackParams = {
     packCode: string
-    status: string
-    title: string
-    placeName: string
-    date: string
+    events: TrackEvent[]
+    lastUpdateDate: string
     lastUpdateTime: string
 }
 

@@ -7,6 +7,14 @@ import { MongoOmit } from "./protocol/MongoOmit";
 
 export class MongoCreateTrackRepository implements ICreateTrackRepository {
     async createTrack(params: CreateTrackParams): Promise<ITrack> {
+        const hasTrack = await MongoClient.db
+            .collection<MongoOmit>("tracks")
+            .findOne({ packCode: params.packCode })
+
+        if (hasTrack) {
+            throw AppErrorFactory.create(HttpStatusCode.CONFLICT, "Track already exists")
+        }
+
         const { insertedId } = await MongoClient.db
             .collection("tracks")
             .insertOne(params)

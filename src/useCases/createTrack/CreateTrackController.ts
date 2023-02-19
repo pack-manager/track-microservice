@@ -7,10 +7,9 @@ import { IHttpResponse } from "../../shared/protocol/IHttpResponse"
 import { IUseCase } from "../../shared/protocol/IUseCase"
 import { ICreateTrackRequestDTO } from "./ICreateTrackRequestDTO"
 
-
 export class CreateTrackController implements IController {
     constructor(
-        private readonly createPackUseCase: IUseCase
+        private readonly createTrackUseCase: IUseCase
     ) { }
 
     async handle(httpRequest: IHttpRequest<ICreateTrackRequestDTO>): Promise<IHttpResponse<ITrack | string>> {
@@ -21,11 +20,7 @@ export class CreateTrackController implements IController {
                 return badRequest("Please specify a body")
             }
 
-            const response = await this.createPackUseCase.execute(body)
-
-            if (response instanceof AppError) {
-                return customErrorMessage(response.status, response.message)
-            }
+            const response = await this.createTrackUseCase.execute(body)
 
             return created<ITrack>(response)
         } catch (error) {

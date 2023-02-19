@@ -10,13 +10,13 @@ export class CreateTrackUseCase implements IUseCase {
         private readonly repository: ICreateTrackRepository
     ) { }
 
-    async execute({ packCode, status, title, placeName }: ICreateTrackRequestDTO): Promise<ITrack | AppError> {
+    async execute({ packCode, events }: ICreateTrackRequestDTO): Promise<ITrack | AppError> {
         try {
             const dateObj: Date = new Date()
-            const date = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}`
+            const lastUpdateDate = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}`
             const lastUpdateTime = `${dateObj.getHours()}h${dateObj.getMinutes()}`
 
-            return await this.repository.createTrack({ packCode, status, title, placeName, date, lastUpdateTime })
+            return await this.repository.createTrack({ packCode, events, lastUpdateDate, lastUpdateTime })
         } catch (error) {
             throw handleErrorCatching(error)
         }
